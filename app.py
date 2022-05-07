@@ -10,7 +10,11 @@ from db import db
 from resources.store import Store, StoreList
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
+uri = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #we dont this config from flask, we already have it in sqlalchemy. it records everychange to database
 app.secret_key = "umar"
 api = Api(app)
